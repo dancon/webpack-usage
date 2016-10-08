@@ -6,6 +6,6 @@ module.exports = {
   },
   output: {
     path: __dirname + '/dist',
-    filename: '[name]_bundle_[chunkhash:8].js'
+    filename: '[name]_bundle_[chunkhash:8]_[hash].js'
   }
 }

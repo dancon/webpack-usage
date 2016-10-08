@@ -165,3 +165,74 @@ webpack 的绑定入口。
 ```
 
 > 在本项目下通过 `git checkout -f entry-step-3` 查看示例源码。
+
+#### `output`
+
+改配置项影响编译的输出。 `output` 告诉 Webpack 如何把编译后的文件写入磁盘。需要注意的是，虽然允许配置多个 `entry` 入口，但是只能配置一个 `output` 出口。
+
+如过你使用了任何的 hash 机制（`[hash]` 或者 `[chunkhash]`）,需要确保模块有一个一致的顺序。可以使用 `OccurenceOrderPlugin` 或者 `recordsPath`.
+
+#### `output.filename`
+
+用来指定输出到磁盘中的每个文件的名字。你 *MUST NOT* 在这里指定一个绝对路径，`output.path` 才是用来指定输出文件的路径的，而 `filename` 仅仅是用来为每个文件命名的。
+
+##### 单一 entry
+
+```
+    {
+        entry: './app/entry.js',
+        output: {
+            filename: 'bundle.js',
+            path: './dist'
+        }
+    }
+```
+
+> 在本项目下通过 `git checkout -f entry-step-1` 查看示例源码。
+
+##### 多个 entry
+
+如果你的配置创建了多个 `chunk` (比如配置了多个 entry 或者使用了类似 `CommonsChunkPlugin` 的插件)，你应该使用如下配置来确保每个输出文件都有一个唯一的名字。
+
+> Note: 这里的 chunk 就是编译后的模块，简单的来说就是编译后输出的文件，一个文件就是一个 chunk.
+
+此配置项还可以使用如下占位符：
+
+`[name]` 将被 `chunk` 的名字替换。当
+
+`[hash]` 将被此次编译的 hash 值替换。
+
+`[chunkhash]` 将被编译后的每个文件的 hash 值替换。 我们也可以 `[chunkhash:8]` 来指定 hash 值得位数。
+
+> Note: 在实践中发现同时使用 [hash] [chunkhash] 会导致编译出错，错误如下图, 通过 `git checkout -f hash_chunkhash_error` 查看源码。
+
+![](./resource/webpack_hash_chunkhash_erro.png)
+
+```
+    {
+        context: __dirname + '/app',
+        entry: {
+            page1: './page',
+            page2: ['./entry', './otherEntry']
+        },
+        output: {
+            path: __dirname + '/dist',
+            filename: '[name]_bundle_[chunkhash:8].js'
+        }
+    }
+```
+
+结果如下图：
+
+![](./resource/webpack-output.png)
+
+#### * `output.path`
+
+用来指定输出文件的绝对路径，必选。
+
+此配置项可以使用如下占位符：
+
+[hash] 将被本次编译的 hash 值替换。
+
+#### `output.publicPath`
+
