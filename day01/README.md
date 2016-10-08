@@ -45,3 +45,117 @@
     }], callback);
 ```
 
+### CONFIGURATION OBJECT CONTENT
+
+> 提示：我们并不需要完全以 JSON 格式来书写配置，使用 JavaScript 对象即可，它就是一个 Node.js 的模块
+
+非常简单的 configuration object 示例：
+
+```
+    {
+        context: __dirname + '/app',
+        entry: './entry',
+        output: {
+            path: __dirname + '/dist',
+            filename: 'bundle.js'
+        }
+    }
+```
+
+#### `context`
+
+`entry` 配置项的基路径（这是一个绝对路径），换句话说就是 `entry` 指定的文件就是在 `context` 指定的路径中寻找的。 如果设置了 `output.pathinfo` 选项，则包含的路径信息就是这个目录的简写。
+
+> 默认值：process.cwd()
+
+#### `entry`
+
+webpack 的绑定入口。
+
+如果你传递一个字符串：这个字符串将被认为是一个模块，在启动的时候加载。
+
+```
+    {
+        entry: './entry',
+        output: {
+            filename: 'bundle.js'
+        }
+    }
+```
+
+如果你传递一个数组：那么所有模块都会在启动的时候被加载，而且数组中的最后一个模块被导出
+
+```
+    {
+        entry: ['./entry', './otherEntry'],
+        output: {
+            filename: 'bundle.js'
+        }
+    }
+```
+
+源码：
+
+```
+    // entry.js
+    var name = "John";
+
+    document.write('Hello ' + name + '<br>');
+    console.log("Hell, " + name);
+
+    // otherEntry.js
+    var name = 'other entry';
+
+    document.write('Hello ' + name);
+    console.log('this is ' + name);
+```
+
+编译后的 `bundle.js` 加载所有模块的代码部分如下：
+
+```
+    [
+    /* 0 */
+    /***/ function(module, exports, __webpack_require__) {
+
+    	__webpack_require__(1);
+
+    	// entry 数组中的最后一个被导出
+    	module.exports = __webpack_require__(2);
+
+    /***/ },
+
+    // entry 数组中的所有模块都被加载
+    /* 1 */
+    /***/ function(module, exports) {
+
+    	var name = "John";
+
+    	document.write('Hello ' + name + '<br>');
+    	console.log("Hell, " + name);
+
+    /***/ },
+    /* 2 */
+    /***/ function(module, exports) {
+
+    	var name = 'other entry';
+
+    	document.write('Hello ' + name);
+    	console.log('this is ' + name);
+
+    /***/ }
+    /******/ ]
+```
+
+如果你传递的是一个对象：多个 `entry bundle` 会被创建，对象的 `key` 就是 `chunk name`, 对象的值可以是字符串或者数组
+
+```
+    {
+        entry: {
+            page1: './page',
+            page2: ['./entry', './otherEntry']
+        },
+        output: {
+            filename: '[name].js'
+        }
+    }
+```
