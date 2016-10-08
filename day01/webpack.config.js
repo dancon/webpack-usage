@@ -1,8 +1,11 @@
 module.exports = {
   context: __dirname + '/app',
-  entry: ['./entry', './otherEntry'],
+  entry: {
+    page1: './page',
+    page2: ['./entry', './otherEntry']
+  },
   output: {
     path: __dirname + '/dist',
-    filename: 'bundle.js'
+    filename: '[name]_bundle_[chunkhash:8].js'
   }
 }
