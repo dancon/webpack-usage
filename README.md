@@ -279,7 +279,11 @@ Webpack Dev Server 也能通过 `publicPath` 来找到指定的编译后文件�
 
 > 笔者：这段内容在我阅读到这里的时候还不是清楚 `__webpack_public_path__` 的作用，但是如果到动态替换 index.html 中的引用的话，我们可以借助 Webpack 插件 `assets-webpack-plugin` <http://qszhuan.github.io/webpack/2016/02/14/webpack_basic_2_add_hash_in_filename>
 
+#### `output.chunkFilename`
+
+没有在 `entry` 中列出的文件编译后的文件名，这类文件被编译到 `output.path` 指定的路径下。通常是在异步加载文件时会用到，[此文](http://www.cnblogs.com/rubylouvre/p/4981929.html) 可以帮助我们理解。
 
 ### 相关文章
 
 [Webpack中hash与chunkhash的区别，以及js与css的hash指纹解耦方案](http://www.cnblogs.com/ihardcoder/p/5623411.html)
+[webpack异步加载业务模块](http://www.cnblogs.com/rubylouvre/p/4981929.html)
