@@ -7,6 +7,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     publicPath: '/static/',
-    filename: '[name]_bundle.js'
+    filename: '[name]_bundle.js',
+    sourceMapFilename: '[file]-[id].map'
   }
 }
