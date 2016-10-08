@@ -257,7 +257,7 @@ Webpack Dev Server 也能通过 `publicPath` 来找到指定的编译后文件�
     <script src="/static/page2_bundle.js"></script>
 ```
 
-> 在本工程下通过 `git checkout -f publicPath` 查看示例源码。
+> 在本工程下通过 `git checkout -f output-publicPath` 查看示例源码。
 
 一个稍微复杂的示例：使用 CDN 和 [hash]
 
