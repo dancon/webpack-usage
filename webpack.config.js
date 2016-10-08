@@ -6,7 +6,7 @@ module.exports = {
   },
   output: {
     path: __dirname + '/dist',
-    publicPath: __dirname + '/root/',
-    filename: '[name]_bundle_[chunkhash:8].js'
+    publicPath: '/static/',
+    filename: '[name]_bundle.js'
   }
 }

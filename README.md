@@ -188,7 +188,7 @@ webpack 的绑定入口。
     }
 ```
 
-> 在本项目下通过 `git checkout -f entry-step-1` 查看示例源码。
+> 在本工程下通过 `git checkout -f entry-step-1` 查看示例源码。
 
 ##### 多个 entry
 
@@ -236,3 +236,45 @@ webpack 的绑定入口。
 
 #### `output.publicPath`
 
+`publicPath` 配置项用来指定当浏览器引用编译后的文件时的公共 URL 地址。对于引用静态资源的标签（`script`, `link`, `img`）, 而且 `path` 和 `publicPath` 指定的路径不同时，我们应该使用 `publicPath` 指定的路径，而不是 `path`。这项配置在你打算把一些或者全部编译后的文件放置在不同域名或者使用 CDN 时是非常有用的。
+
+Webpack Dev Server 也能通过 `publicPath` 来找到指定的编译后文件。
+
+和 `path` 配置一样，此项配置也可以是用 `[hash]` 占位符来优化缓存策略。
+
+*webpack.config.js*
+```
+    output: {
+        path: __dirname + '/dist',
+        publicPath: '/static/',
+        filename: '[name]_bundle.js'
+    }
+```
+
+*index.html*
+```
+    <script src="/static/page1_bundle.js"></script>
+    <script src="/static/page2_bundle.js"></script>
+```
+
+> 在本工程下通过 `git checkout -f publicPath` 查看示例源码。
+
+一个稍微复杂的示例：使用 CDN 和 [hash]
+
+*config.js*
+```
+    output: {
+        path: "/home/proj/cdn/assets/[hash]",
+        publicPath: "http://cdn.example.com/assets/[hash]"
+    }
+```
+
+> Note: 在这个示例中，在编译的过程中，我们并不知道 `publicPath` 的值，我们可以留空并在运行时，在入口文件中（entry point file）动态的设置。如果你在编译时不知道 `publicPath` 你可以忽略它并在 `entry point` 设置 `__webpack_public_path__`.
+
+```
+     __webpack_public_path__ = myRuntimePublicPath
+
+    // rest of your application entry
+```
+
+> 笔者：这段内容在我阅读到这里的时候还不是清楚 `__webpack_public_path__` 的作用，但是如果到动态替换 index.html 中的引用的话，我们可以借助 Webpack 插件 `assets-webpack-plugin` <http://qszhuan.github.io/webpack/2016/02/14/webpack_basic_2_add_hash_in_filename>
