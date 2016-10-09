@@ -259,6 +259,43 @@ Loaders 还可以被链式使用，而且有时候你确实需要链式加载。
 
 > 使用 `git checkout -f getting-started-loaders` 然后进入 `CONF` 来查看源码，运行 `webpack` 查看效果
 
+### 使用 plugins
+
+通常，如果你还想对你的打包流程进行额外的处理的话，我们可以使用 plugins. 下面的例子将压缩你的文件以便浏览器可以更快的加载。我们将配置文件中添加 `uglify` 插件。
+
+```
+    const webpack = require('webpack');
+
+    module.exports = {
+        entry: './src/app.js',
+        output: {
+            path: './bin',
+            filename: 'app.bundle.js',
+        },
+        module: {
+            loaders: [{
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+            }]
+        },
+        plugins: [
+            new webpack.optimize.UglifyJsPlugin({
+                compress: {
+                    warnings: false,
+                },
+                output: {
+                    comments: false,
+                },
+            }),
+        ]
+    }
+```
+
+Uglify 插件包含在 webpack 中， 所以你不需要添加额外的模块，但并不是一层不变的，你可以去编写你自定义的插件。在这次构建中，uglify 插件把打包后的文件从 523kb 压缩到了 174kb。
+
+> 使用 `git checkout -f getting-started-plugins` 然后进入 `CONF` 来查看源码，运行 `webpack` 来查看效果。
+
 ### 配置
 
 > webpack 提供了一个配置对象，它会根据 webpack 的不同用法而有不一样的传递方式。
