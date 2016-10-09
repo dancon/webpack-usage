@@ -379,8 +379,76 @@ Loader 的命名格式再某些场景下是非常有用的，特别是通过 `re
 
     require('jade!./template.jade')
     // 使用安装到项目中的 jade-loader （位于项目的 node_modules 目录中） 来转换 template.jade 文件
+    // 如果在 webpack.config.js 中还有其他的 loader 绑定到这个文件上，这些 loader 还会重新转换 file.txt
 
     require('!style!css!less!bootstrap/less/bootstrap.less')
+    // loader 的链式调用。
+    // bootstrap.less 位于 bootstrap 模块（从 github 安装到 node_modules 中的第三方模块）中 less 目录
+    // bootstrap.less 先有 less-loader 处理，结果再由 css-loader 处理最后是 style-loader.
+    // 如果在 webpack.config.js 中还有其他的 loader 绑定到这个文件上，这些 loader 还会重新转换 bootstrap.less
+```
+
+##### 通过 webpack.config.js 来配置 loader
+
+我们可以在 webpack 的配置文件中通过正则表达式来为命中的文件绑定 loader
+
+```
+    {
+        module: {
+            loaders: [
+                {test: /\.jade$/, loader: 'jade'},
+                // 为所有以 .jade 结尾的文件绑定 jade-loader
+
+                {test: /\.css$/, loader: 'style!css'},
+                // 为所有以 .css 结尾的文件绑定了 css-loader 和 style-loader
+                // 或者可以使用以下等价的语法来替换 loader 的链式调用
+                {test: /\.css$/, loader: ['style', 'css']}
+            ]
+        }
+    }
+```
+
+##### 通过 CLI 引用 loader
+
+我们可以通过 CLI 来为特定的文件扩展名绑定 loaders
+
+```
+    webpack --module-bind jade --module-bind 'css=style!css'
+```
+
+这条命令为 .jade 文件绑定 jade-loader, 为 .css 文件绑定 style-loader 和 css-loader.
+
+#### 查询参数
+
+可以通过 query string 来为 loader 传递查询参数。通过 `?` 把  query string 拼到 loader 名字后面。比如 `url-loader?mimitype=image/png`.
+
+> Note: query string 的格式依赖于 loader. 大部分的 loader 可以接受正常的 query string 如 `?key1=value1&key2=value2` 和 JSON 对象 如 `?{"key1":"value1", "key2":"value2"}`
+
+##### in `require`
+
+```
+    require('url-loader?mimetype=image/png!./file.png');
+```
+
+##### `webpack.config.js`
+
+```
+    {test: /\.png$/, loader: 'url-loader?mimetype=image/png'}
+```
+或者
+
+```
+    {
+        test: /\.png$/,
+        loader: 'url-loader',
+        query: { mimetpe: 'image/png' }
+    }
+```
+
+##### CLI
+
+```
+    webpack --module-bind 'png=url-loader?mimetype=image/png'
 ```
 
 ### 配置
