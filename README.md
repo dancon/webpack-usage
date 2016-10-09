@@ -87,19 +87,24 @@ webpack 是一个非常灵活的模块打包工具。他提供了很多高级的
 > 放眼世界，有各种各样的项目组织结构。有些项目使用 `app` 代替 `src` 来存放源码，使用 `dist` 或者 `build` 替换 `bin` 来存放打包后的文件。有测试代码的项目通常使用 `test` `tests` `spec` `specs` 来存放测试文件，也有直接把测试文件放置在源码目录中的。
 
 1. 新建 `bin` 和 `src` 目录
+
     ```
         mkdir bin
         mkdir src
     ```
+
 2. 把源码移动到 `src` 目录下
     ```
         mv app.js cats.js src
     ```
 3. 初始化 npm 项目
+
     ```
         npm init # (按提示填写项目信息)
     ```
+
 4. 安装 webpack 作为开发环境的依赖，这样可以明确你的项目所兼容的 webpack 的版本。
+
     ```
         npm install --save-dev webpack
     ```
@@ -109,6 +114,7 @@ webpack 是一个非常灵活的模块打包工具。他提供了很多高级的
 随着你项目的扩张和配置的复杂，通过 CLI 来打包项目也将变得越来越麻烦，通过配置文件来打包项目迫在眉睫。
 
 1. 创建 `webpack.config.js`
+
     ```
         module.exports = {
             entry: '.src/app.js',
@@ -118,13 +124,17 @@ webpack 是一个非常灵活的模块打包工具。他提供了很多高级的
             }
         }
     ```
+
     > webpack.config.js 是 CommonJS 风格的模块，所以你可以在这个文件书写任何 JavaScript 代码，只要对外导出配置对象就可以了。
 2. 在配置文件所在的目录下，你可以如下轻松的运行 webpack 命令。
+
     ```
         webpack
     ```
+
     > webpack 默认读取同级目录下的 `webpack.config.js` 然后按照配置进行打包，最终输出打包后的文件 `bin/app.bundle.js`. 你查看输出的文件，你就会发现 webpack 把源码中的两个文件都包含进来了。
 3. 运行 `bin/app.bundle.js` 你就能看到 cats 列表。
+
     ```
         node bin/app.bundle.js
 
