@@ -144,6 +144,121 @@ webpack 是一个非常灵活的模块打包工具。他提供了很多高级的
 
 > 通过 `git checkout -f getting-started-config` 然后进入 `CONF` 来查看源码。 在该目录下运行 `webpack` 查看效果
 
+### 使用 loaders
+
+webpack 只支持原生的 JavaScript 模块，但是很多人使用的是其他 JS 的预编译语言 (CoffeeScript, TypeScript等等) 或者 ES2015, 要想在 webpack 中还能如丝般顺滑的使用他们，我们就需要用到 `loaders` 来转换。
+
+Loaders 是 webpack 把其他模块(使用其他语言编写) "加载" 成 webpack 能理解的 JavaScript 的特殊模块。
+
+比如： `babel-loader` 使用 Babel 来加载 ES2015 文件。
+
+![](./resource/babel-loader.png)
+
+`json-loader` 加载 JSON 文件（仅仅是在 json 文件的头部加入 `module.exports = ` 来把 json 转换为 CommonJS 模块）
+
+![](./resource/json-loader.png)
+
+Loaders 还可以被链式使用，而且有时候你确实需要链式加载。比如 `yaml-loader` 仅仅是把 YAML 文件转换为 JSON， 因此我们还需要链式使用 `json-loader` 才能使用。
+
+![](./resource/yaml-loader.png)
+
+#### 使用 `babel-loader` 转换 ES2015
+
+在本示例中，我们使用 Babel 在 webpack 来使用 ES2015 的新特性。
+
+1. 安装 Babel 和 babel-presets:
+
+    ```
+        npm install --save-dev babel-core babel-preset-es2015
+    ```
+
+2. 安装 `babel-loader`
+
+    ```
+        npm install --save-dev babel-loader
+    ```
+
+3. 在 `.babelrc` 中配置 presets
+
+    ```
+        {
+            "presets": [es2015]
+        }
+    ```
+
+4. 修改 `webpack.config.js`， 使用 `babel-loader` 来处理所有以 `.js` 结尾的文件
+
+    ```
+        module.exports = {
+          entry: './src/app.js',
+          output: {
+            path: './bin',
+            filename: 'app.bundle.js'
+          },
+          module: {
+            loaders: [
+              {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader'
+              }
+            ]
+          }
+        }
+    ```
+
+    > 这里我们使用 `exclude` 排除了 `node_module`， 避免 Babel 处理其中的文件导致拖慢 webpack 的编译速度。
+
+5. 安装你打算使用的三方库。
+
+    ```
+        npm install --save jquerey babel-polyfill
+    ```
+
+    > 这次我们使用 `--save` 而不是 `--save-dev` 来安装库，因为这两个库文件在运行时会使用到。我们使用 `babel-polyfill` 是为了能让 ES2015 的新接口能在老版本的浏览器中正常运行。
+
+6. 编辑 `scr/app.js`
+
+    ```
+        import 'babel-polyfill';
+         import cats from './cats';
+         import $ from 'jquery';
+
+         $('<h1>Cats</h1>').appendTo('body');
+         const ul = $('<ul></ul>').appendTo('body');
+         for (const cat of cats) {
+             $('<li></li>').text(cat).appendTo(ul);
+         }
+    ```
+
+7. 使用 webpack 来打包模块。
+
+    ```
+        webpack
+    ```
+
+8. 添加 `index.html` 以让应用可以运行在浏览器中。
+
+    ```
+         <!DOCTYPE html>
+         <html>
+             <head>
+                 <meta charset="utf-8">
+             </head>
+             <body>
+                 <script src="bin/app.bundle.js" charset="utf-8"></script>
+             </body>
+         </html>
+    ```
+
+当你在浏览器中打开 `index.html`, 你将看到如下效果：
+
+![](./resource/cats.png)
+
+这里有很多不同的 [loaders](https://webpack.github.io/docs/list-of-loaders.html) 以供我们使用，包括 css , image loaders.
+
+> 使用 `git checkout -f getting-started-loaders` 然后进入 `CONF` 来查看源码，运行 `webpack` 查看效果
+
 ### 配置
 
 > webpack 提供了一个配置对象，它会根据 webpack 的不同用法而有不一样的传递方式。
