@@ -296,6 +296,93 @@ Uglify 插件包含在 webpack 中， 所以你不需要添加额外的模块，
 
 > 使用 `git checkout -f getting-started-plugins` 然后进入 `CONF` 来查看源码，运行 `webpack` 来查看效果。
 
+### Loaders 详解
+
+#### WHAT ARE LOADERS?
+
+Loaders 是你应用中源码文件的转换器。本质上，他就是一些运行在 Node.js 中的函数，这些函数把源文件的代码作为入参，然后返回转换后的新代码。
+
+比如，你可以使用 loaders 让 webpack 加载 CoffeeScript 或者 JSX.
+
+##### Loader 的特性
+
+* Loaders 可以链式调用。他们应用管道来处理资源，最后调用的 loader 返回 JavaScript. 每个 loader 都能以任意格式返回源码，并传递给调用链中的下一个 loader.
+
+* Loaders 可以是同步或者异步。
+
+* Loaders 运行在 Node.js 中，所以他可以做任何 Node.js 可以做的事情。
+
+* Loaders 接受 `query` 参数，用来为 loader 传递配置参数。
+
+* 可以在传递给 Loaders 的配置项中绑定扩展（extensions）/ 正则表达式。
+
+* Loaders 可以通过 npm 来发布 / 安装。
+
+* 正常的模块除了主入口模块，可以通过 `package.json` 的 `loader` 来导出一个 loader. （也就是说 loader 可以是一个正常的模块）
+
+* Loaders 可以访问到 webpack 的配置对象。
+
+* Plugins 可以为 loaders 提供更多的功能。
+
+* Loaders 可以发出额外的任意文件（Loaders can emit additional arbitrary files）。
+
+如果感兴趣，可以在 [list of loaders](https://webpack.github.io/docs/list-of-loaders.html) 找到一些 loader 的示例。
+
+#### RESOLVING LOADERS
+
+Loaders 就是一个类模块。Loader 模块是使用 Node.js 来编写的，导出一个函数。 通常情况下，我们使用 npm 来管理 loader,当然你也可以只是把他作为你应用中的一个模块而不用发布。
+
+##### 引用 loaders
+
+按照惯例，虽不是强制约定，通常是以 `XXX-loader` 的格式来为一个 loader 命名，其中 `XXX` 部分是 loader 实际功能的名称，比如 `json-loader`.
+
+我们可以通过 loader 的全名（e.g. `json-loader`）来引用，也可以使用他的简写来引用（e.g. `json`）。
+
+Loaders 的命名格式（`convention`）和查询的优先顺序是通过 webpace 的配置中的 `resolveLoader.moduleTemplates` 配置项来定义的。
+
+Loader 的命名格式再某些场景下是非常有用的，特别是通过 `require()` 来引用的时候，具体可见下面的用法部分。
+
+##### 安装 loaders
+
+如果 loader 发布到了 npm, 我们可以通过如下命令来安装
+
+```
+    npm install xxx-loader --save-dev
+```
+或者
+
+```
+    npm install xxx-loader --save
+```
+
+#### 用法
+
+有三种方式在我们的 app 中使用 loader
+
+* 通过 `require` 语句显示的加载。
+
+* 在 `webpack.config.js` 中配置
+
+* 通过 CLI 配置
+
+##### loaders in `require`
+
+> 尽可能避免使用这种方式来引用 loader. 尽量使用 webpack 的配置文件来使用 loader
+
+可以通过 `require` 语句来指定 loader. 通过 `!` 来分割 loader 和源文件，而且分割的每一部分都默认从 `require` 所在目录下寻找。
+
+在配置文件中通过以 `!` 开头的规则可能覆盖 `require` 的loader
+
+```
+    require('./loader!./dir/file.txt');
+    // 使用当前目录下的 loader.js 来转换 dir 目录中的 file.txt 文件
+
+    require('jade!./template.jade')
+    // 使用安装到项目中的 jade-loader （位于项目的 node_modules 目录中） 来转换 template.jade 文件
+
+    require('!style!css!less!bootstrap/less/bootstrap.less')
+```
+
 ### 配置
 
 > webpack 提供了一个配置对象，它会根据 webpack 的不同用法而有不一样的传递方式。
