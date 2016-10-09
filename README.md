@@ -1,3 +1,77 @@
+### 安装
+
+可以通过 npm 安装 Webpack.
+
+```
+    npm install -g webpack
+```
+
+> ***Note: 出于演示的目的，我们可以把 Webpack 安装到全局，但是在一个真正的项目中，强烈建议安装时使用 `--save-dev` 参数安装到 `devDependency` 中***
+
+### 开始
+
+首先，我们将使用 Webpack 的命令行接口来学习 Webpack 的基础知识。
+
+#### 创建一个 JavaScript 项目。
+
+我们使用 CommonJS 语法来创建几个 JavaScript 模块。
+
+**cats.js**
+
+```
+    var cats = ['dave', 'henry', 'martha'];
+    module.exports = cats;
+```
+
+**dogs.js**
+
+```
+    var dogs = ['terry', 'sunshine'];
+    module.exports = dogs;
+```
+
+**animals.js**
+
+```
+    var dogs = require('./dogs.js'),
+      cats = require('./cats.js'),
+      animals = [].concat(dogs, cats);
+
+    module.exports = animals;
+```
+
+**app.js**(入口文件)
+
+```
+    var cats = require('./cats.js');
+    console.log(cats);
+```
+
+入口文件就是你的应用首次加载的文件，也是 Webpack 开始追踪分析依赖模块的入口。
+
+#### Webpack in 5 seconds
+
+提供 webpack 入口文件（app.js）然后指定输出文件（app.bundle.js）
+
+```
+    webpack ./app.js app.bundle.js
+```
+
+webpack 读取入口文件，并分析其中的依赖（包括持续依赖（依赖的依赖）），最后把所有依赖提取打包到 `app.bundle.js` 中。
+
+到这一步，我们就可以通过 node 来运行 app.bundle.js 来查看效果了。
+
+```
+    node app.bundle.js
+
+    // 输出结果
+    [ 'terry', 'sunshine', 'dave', 'henry', 'martha' ]
+```
+
+> 在本项目中通过 `git checkout -f getting-started-cli` 并进入 `CLI` 目录来查看源码。
+
+你也可以在浏览器中运行 app.bundle.js.
+
 ### 配置
 
 > webpack 提供了一个配置对象，它会根据 webpack 的不同用法而有不一样的传递方式。
@@ -306,6 +380,16 @@ Webpack Dev Server 也能通过 `publicPath` 来找到指定的编译后文件�
 `[hash]` 被此次编译的 hash 值替换
 
 > 该配置项只有在使用 `--source-map` 编译时生效，也可以使用 `-d` 缩写来替换，通过 `git checkout -f output-sourceMapFilename` 来查看源码
+
+#### `module`
+
+该配置项影响正常的模块（`NormalModuleFactory`）
+
+#### `nodule.loaders`
+
+加载器数组，这些加载器在启动时将自动应用。
+
+
 
 ### 相关文章
 
