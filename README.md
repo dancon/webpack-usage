@@ -505,7 +505,7 @@ Loader 仅仅是一个 Node.js 的函数，通过 loader 把一些使用 JavaScr
 
 其实从 `webpack.config.js` 的配置也能看出一二，loader 是对命中规则的文件生效，而 plugin 更像是对 webpack 全局的注入。
 
-抽象的区别也就能说这么多，更多细微的区别可以通过 [how to write a loader](http://webpack.github.io/docs/how-to-write-a-loader.html) 和 [how to write a plugin](http://webpack.github.io/docs/how-to-write-a-plugin.html)
+抽象的区别也就能说这么多，更多细微的区别可以通过 [how to write a loader](http://webpack.github.io/docs/how-to-write-a-loader.html) 和 [how to write a plugin](http://webpack.github.io/docs/how-to-write-a-plugin.html) 来了解。
 
 ### 配置
 
