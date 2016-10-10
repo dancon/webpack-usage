@@ -451,6 +451,62 @@ Loader 的命名格式再某些场景下是非常有用的，特别是通过 `re
     webpack --module-bind 'png=url-loader?mimetype=image/png'
 ```
 
+### Plugins 详解
+
+Plugins 能为 webpack 的打包流程新增功能。比如： `BellOnBundlerErrorPlugin` 插件能在 webpack 打包过程中出现错误后发出提醒。
+
+#### 内置插件
+
+通过在 `webpack.config.js` 中配置 `plugins` 属性来为项目的打包流程添加插件。 webpack 内置了一些插件，在配置文件中通过 `require('webpack')` 来加载内置插件。
+
+```
+    // 保证在当前项目中安装了 webpack.
+    var webpack = require("webpack");
+
+    module.exports = {
+        plugins: [
+            new webpack.ResolverPlugin([
+                new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+            ], ["normal", "loader"])
+        ]
+    };
+```
+
+#### 其他插件
+
+一些非内置的，并且发布到 npm 上的，我们可以通过 npm install 来安装，然后才能使用。
+
+比如：
+
+```
+    npm install component-webpack-plugin
+```
+
+然后在 `webpack.config.js` 如下配置：
+
+```
+    var ComponentPlugin = require("component-webpack-plugin");
+    module.exports = {
+        plugins: [
+            new ComponentPlugin()
+        ]
+    }
+```
+
+如果在项目中通过 npm 安装了第三方的插件，建议使用 [webpack-load-plugin](https://www.npmjs.com/package/webpack-load-plugins) 来简化配置。
+
+`webpack-load-plugin` 会检测所有安装到 `package.json` `devDependencies` 中的插件，然后再用到的时候自动加载。
+
+#### Plugins 与 Loaders 的区别
+
+Loader 仅仅是一个 Node.js 的函数，通过 loader 把一些使用 JavaScript 的预编译语言（webpack 没有原生支持的）或者 ES2015 编写的源文件转换为 webpack 可以识别的 JavaScript 模块。简单的来讲，Loader 就是一个预处理器，并不会影响 webpack 的打包流程。
+
+相比 Plugin, 要比 loader 功能更强大。他可以通过注册挂钩更紧密的集成到 webpack 的打包流程中，能够影响 webpack 的构建/编译。
+
+其实从 `webpack.config.js` 的配置也能看出一二，loader 是对命中规则的文件生效，而 plugin 更像是对 webpack 全局的注入。
+
+抽象的区别也就能说这么多，更多细微的区别可以通过 [how to write a loader](http://webpack.github.io/docs/how-to-write-a-loader.html) 和 [how to write a plugin](http://webpack.github.io/docs/how-to-write-a-plugin.html)
+
 ### 配置
 
 > webpack 提供了一个配置对象，它会根据 webpack 的不同用法而有不一样的传递方式。
