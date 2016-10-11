@@ -9,5 +9,6 @@ module.exports = {
     publicPath: '/static/',
     filename: '[name]_bundle.js',
     sourceMapFilename: '[file]-[id].map'
-  }
+  },
+  watch: true
 }

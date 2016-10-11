@@ -1,5 +1,4 @@
 var name = 'page module';
 
-document.write('Hello ' + name);
-
 console.log('this is a page module');
+console.log('i modify the file 。。。00001111122222');
